@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-hk">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="生成一個乳腺癌診斷的SVM分類器，並計算準確率。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Breast Cancer Prediction">
+<meta property="og:url" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/index.html">
+<meta property="og:site_name" content="重塑宇宙">
+<meta property="og:description" content="生成一個乳腺癌診斷的SVM分類器，並計算準確率。">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/test.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210406121240606.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210331180603361.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210331180543906.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/diagnosis.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/corr.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/corr_threshold.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210402194446558.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210402195008783.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210402195029458.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210402195127657.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210402195200420.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210406103441087.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/image-20210406105921732.png">
+<meta property="og:image" content="https://www.freesion.com/images/603/6c49f8182ee5599e6ad833c6482e558b.png">
+<meta property="article:published_time" content="2021-03-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-06T04:12:51.115Z">
+<meta property="article:author" content="meowsang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/test.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/"/>
+
+
+
+
+
+  <title>Breast Cancer Prediction | 重塑宇宙</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-hk">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">重塑宇宙</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我来过这个世界</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            關於
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://meowsang.github.io/2021/03/10/Breast-Cancer-Prediction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="重塑宇宙">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Breast Cancer Prediction</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2021-03-10T00:00:00+08:00">
+                2021-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  生成一個乳腺癌診斷的SVM分類器，並計算準確率。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/03/10/Breast-Cancer-Prediction/test.png" alt="test"></p>
+<h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h2><p>根據女性乳腺癌患者數據集，應用邏輯回歸、隨機森林、樸素貝葉斯、KNN、決策樹、SVM等技術構建分類模型，進行良／惡性乳腺癌腫瘤預測。</p>
+<h2 id="2-數據集"><a href="#2-數據集" class="headerlink" title="2.數據集"></a>2.數據集</h2><h3 id="2-1-數據來源"><a href="#2-1-數據來源" class="headerlink" title="2.1 數據來源"></a>2.1 數據來源</h3><p>數據集來自美國威斯康星州的乳腺癌診斷數據集，醫療人員採集了患者乳腺腫塊經過細針穿刺 (FNA) 後獲得的醫學影像圖，並且對這些數字圖像進行了特徵提取，這些特徵可以描述圖像中的細胞核呈現，腫瘤可以分成良性和惡性。</p>
+<p>數據下載：<a target="_blank" rel="noopener" href="https://www.kaggle.com/uciml/breast-cancer-wisconsin-data">https://www.kaggle.com/uciml/breast-cancer-wisconsin-data</a></p>
+<h3 id="2-2-數據特徵"><a href="#2-2-數據特徵" class="headerlink" title="2.2 數據特徵"></a>2.2 數據特徵</h3><p>數據表一共包括了 32 個字段，代表的含義如下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>ID标识</td>
+</tr>
+<tr>
+<td>diagnosis</td>
+<td>M/B (M：惡性；B：良性)</td>
+</tr>
+<tr>
+<td>radius_mean</td>
+<td>平均半徑</td>
+</tr>
+<tr>
+<td>texture_mean</td>
+<td>平均紋理</td>
+</tr>
+<tr>
+<td>perimeter_mean</td>
+<td>平均周長</td>
+</tr>
+<tr>
+<td>area_mean</td>
+<td>平均面積</td>
+</tr>
+<tr>
+<td>smoothness_mean</td>
+<td>平均平滑度</td>
+</tr>
+<tr>
+<td>compactness_mean</td>
+<td>平均緊實度</td>
+</tr>
+<tr>
+<td>concavity_mean</td>
+<td>平均凹度</td>
+</tr>
+<tr>
+<td>concave points_mean</td>
+<td>平均凹點</td>
+</tr>
+<tr>
+<td>symmetry_mean</td>
+<td>平均對稱性</td>
+</tr>
+<tr>
+<td>fractal_dimension_mean</td>
+<td>平均分形尺寸</td>
+</tr>
+<tr>
+<td>radius_se</td>
+<td>半徑標準差</td>
+</tr>
+<tr>
+<td>texture_se</td>
+<td>紋理標準差</td>
+</tr>
+<tr>
+<td>perimeter_se</td>
+<td>周長標準差</td>
+</tr>
+<tr>
+<td>area_se</td>
+<td>面積標準差</td>
+</tr>
+<tr>
+<td>smoothness_se</td>
+<td>平滑度標準差</td>
+</tr>
+<tr>
+<td>compactness_se</td>
+<td>緊實度標準差</td>
+</tr>
+<tr>
+<td>concavity_se</td>
+<td>凹度標準差</td>
+</tr>
+<tr>
+<td>concave points_se</td>
+<td>凹面點標準差</td>
+</tr>
+<tr>
+<td>symmetry_se</td>
+<td>對稱性標準差</td>
+</tr>
+<tr>
+<td>fractal_dimension_se</td>
+<td>分形尺寸標準差</td>
+</tr>
+<tr>
+<td>radius_worst</td>
+<td>最大半徑</td>
+</tr>
+<tr>
+<td>texture_worst</td>
+<td>最大紋理</td>
+</tr>
+<tr>
+<td>perimeter_worst</td>
+<td>最大周長</td>
+</tr>
+<tr>
+<td>area_worst</td>
+<td>最大面積</td>
+</tr>
+<tr>
+<td>smoothness_worst</td>
+<td>最大平滑度</td>
+</tr>
+<tr>
+<td>compactness_worst</td>
+<td>最大緊實度</td>
+</tr>
+<tr>
+<td>concavity_worst</td>
+<td>最大凹度</td>
+</tr>
+<tr>
+<td>concave points_worst</td>
+<td>最大凹點</td>
+</tr>
+<tr>
+<td>symmetry_worst</td>
+<td>最大對稱性</td>
+</tr>
+<tr>
+<td>fractal_dimension_worst</td>
+<td>最大分形尺寸</td>
+</tr>
+</tbody></table>
+<h2 id="3-數據分析"><a href="#3-數據分析" class="headerlink" title="3.數據分析"></a>3.數據分析</h2><h3 id="3-1-基本流程"><a href="#3-1-基本流程" class="headerlink" title="3.1 基本流程"></a>3.1 基本流程</h3><p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210406121240606.png" alt="image-20210406121240606"></p>
+<h3 id="3-1-模塊導入"><a href="#3-1-模塊導入" class="headerlink" title="3.1 模塊導入"></a>3.1 模塊導入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np </span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns </span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.naive_bayes <span class="keyword">import</span> GaussianNB</span><br><span class="line"><span class="keyword">from</span> sklearn.neighbors <span class="keyword">import</span> KNeighborsClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn.tree <span class="keyword">import</span> DecisionTreeClassifier</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> svm</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> metrics</span><br><span class="line"><span class="keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="string">&#x27;ignore&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-讀取數據"><a href="#3-2-讀取數據" class="headerlink" title="3.2 讀取數據"></a>3.2 讀取數據</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data = pd.read_csv(<span class="string">&quot;data.csv&quot;</span>,header=<span class="number">0</span>)</span><br><span class="line">data.head(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210331180603361.png" alt="image-20210331180603361"></p>
+<h3 id="3-3-數據探索"><a href="#3-3-數據探索" class="headerlink" title="3.3 數據探索"></a>3.3 數據探索</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">data.info() </span><br><span class="line">-----------------------------------------------</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&lt;class &#x27;pandas.core.frame.DataFrame&#x27;&gt;</span></span><br><span class="line"><span class="string">RangeIndex: 569 entries, 0 to 568</span></span><br><span class="line"><span class="string">Data columns (total 33 columns):</span></span><br><span class="line"><span class="string">id                         569 non-null int64</span></span><br><span class="line"><span class="string">diagnosis                  569 non-null object</span></span><br><span class="line"><span class="string">radius_mean                569 non-null float64</span></span><br><span class="line"><span class="string">texture_mean               569 non-null float64</span></span><br><span class="line"><span class="string">perimeter_mean             569 non-null float64</span></span><br><span class="line"><span class="string">area_mean                  569 non-null float64</span></span><br><span class="line"><span class="string">smoothness_mean            569 non-null float64</span></span><br><span class="line"><span class="string">compactness_mean           569 non-null float64</span></span><br><span class="line"><span class="string">concavity_mean             569 non-null float64</span></span><br><span class="line"><span class="string">concave points_mean        569 non-null float64</span></span><br><span class="line"><span class="string">symmetry_mean              569 non-null float64</span></span><br><span class="line"><span class="string">fractal_dimension_mean     569 non-null float64</span></span><br><span class="line"><span class="string">radius_se                  569 non-null float64</span></span><br><span class="line"><span class="string">texture_se                 569 non-null float64</span></span><br><span class="line"><span class="string">perimeter_se               569 non-null float64</span></span><br><span class="line"><span class="string">area_se                    569 non-null float64</span></span><br><span class="line"><span class="string">smoothness_se              569 non-null float64</span></span><br><span class="line"><span class="string">compactness_se             569 non-null float64</span></span><br><span class="line"><span class="string">concavity_se               569 non-null float64</span></span><br><span class="line"><span class="string">concave points_se          569 non-null float64</span></span><br><span class="line"><span class="string">symmetry_se                569 non-null float64</span></span><br><span class="line"><span class="string">fractal_dimension_se       569 non-null float64</span></span><br><span class="line"><span class="string">radius_worst               569 non-null float64</span></span><br><span class="line"><span class="string">texture_worst              569 non-null float64</span></span><br><span class="line"><span class="string">perimeter_worst            569 non-null float64</span></span><br><span class="line"><span class="string">area_worst                 569 non-null float64</span></span><br><span class="line"><span class="string">smoothness_worst           569 non-null float64</span></span><br><span class="line"><span class="string">compactness_worst          569 non-null float64</span></span><br><span class="line"><span class="string">concavity_worst            569 non-null float64</span></span><br><span class="line"><span class="string">concave points_worst       569 non-null float64</span></span><br><span class="line"><span class="string">symmetry_worst             569 non-null float64</span></span><br><span class="line"><span class="string">fractal_dimension_worst    569 non-null float64</span></span><br><span class="line"><span class="string">Unnamed: 32                0 non-null float64</span></span><br><span class="line"><span class="string">dtypes: float64(31), int64(1), object(1)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-數據清洗"><a href="#3-3-數據清洗" class="headerlink" title="3.3 數據清洗"></a>3.3 數據清洗</h3><p>在這32個字段里，’id’是沒有實際意義的，’Unnamed: 32’全部為空值並且也沒有實際意義，因此可以將這兩項去除。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.drop([<span class="string">&#x27;Unnamed: 32&#x27;</span>,<span class="string">&#x27;id&#x27;</span>], inplace = <span class="literal">True</span>, axis = <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>‘diagnosis’的取值為M和B，代表惡性和良性腫瘤，分別用1和0進行替換。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data[<span class="string">&#x27;diagnosis&#x27;</span>]=data[<span class="string">&#x27;diagnosis&#x27;</span>].<span class="built_in">map</span>(&#123;<span class="string">&#x27;M&#x27;</span>:<span class="number">1</span>,<span class="string">&#x27;B&#x27;</span>:<span class="number">0</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">data.columns</span><br><span class="line">--------------------------------------</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">Index([&#x27;diagnosis&#x27;, &#x27;radius_mean&#x27;, &#x27;texture_mean&#x27;, &#x27;perimeter_mean&#x27;, &#x27;area_mean&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;smoothness_mean&#x27;, &#x27;compactness_mean&#x27;, &#x27;concavity_mean&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;concave points_mean&#x27;, &#x27;symmetry_mean&#x27;, &#x27;fractal_dimension_mean&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;radius_se&#x27;, &#x27;texture_se&#x27;, &#x27;perimeter_se&#x27;, &#x27;area_se&#x27;, &#x27;smoothness_se&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;compactness_se&#x27;, &#x27;concavity_se&#x27;, &#x27;concave points_se&#x27;, &#x27;symmetry_se&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;fractal_dimension_se&#x27;, &#x27;radius_worst&#x27;, &#x27;texture_worst&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;perimeter_worst&#x27;, &#x27;area_worst&#x27;, &#x27;smoothness_worst&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;compactness_worst&#x27;, &#x27;concavity_worst&#x27;, &#x27;concave points_worst&#x27;,</span></span><br><span class="line"><span class="string">       &#x27;symmetry_worst&#x27;, &#x27;fractal_dimension_worst&#x27;],</span></span><br><span class="line"><span class="string">      dtype=&#x27;object&#x27;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-數據統計描述"><a href="#3-4-數據統計描述" class="headerlink" title="3.4 數據統計描述"></a>3.4 數據統計描述</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.describe() </span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210331180543906.png" alt="image-20210331180543906"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#腫瘤診斷結果可視化</span></span><br><span class="line">sns.countplot(data[<span class="string">&#x27;diagnosis&#x27;</span>],label=<span class="string">&quot;Count&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/diagnosis.png" alt="image-20210331180641550"></p>
+<h3 id="3-5-特徵選擇"><a href="#3-5-特徵選擇" class="headerlink" title="3.5 特徵選擇"></a>3.5 特徵選擇</h3><p>首先觀察各個變量之間的相關性，用熱力圖將結果可視化呈現。當接近1時，表示兩者具有強烈的正相關性；當接近-1時，表示有強烈的負相關性。選擇threshold&gt;0.6的變量作為相關性較大的一組變量。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#變量之間的相關性</span></span><br><span class="line">plt.figure(figsize=(<span class="number">25</span>,<span class="number">25</span>))</span><br><span class="line">corr_matrix = data.corr()</span><br><span class="line">sns.heatmap(corr_matrix, annot = <span class="literal">True</span>, fmt = <span class="string">&quot;.2f&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/corr.png" alt="corr"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#取相關性較大的幾個變量</span></span><br><span class="line">threshold = <span class="number">0.6</span></span><br><span class="line">plt.figure(figsize=(<span class="number">12</span>,<span class="number">12</span>))</span><br><span class="line">filtre = np.<span class="built_in">abs</span>(corr_matrix[<span class="string">&quot;diagnosis&quot;</span>]) &gt; threshold </span><br><span class="line">corr_features = corr_matrix.columns[filtre].tolist()</span><br><span class="line">sns.heatmap(data[corr_features].corr(), annot = <span class="literal">True</span>, fmt = <span class="string">&quot;.2f&quot;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/corr_threshold.png" alt="corr_threshold"></p>
+<p>另外，數據集中一組數據有多個特徵，30個字段分別代表了平均值、標準差、最大值三種不同的度量方式，因此可以分成三組字段features_mean、features_se、features_mean。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">features_mean = <span class="built_in">list</span>(data.columns[<span class="number">1</span>:<span class="number">11</span>])</span><br><span class="line">features_se = <span class="built_in">list</span>(data.columns[<span class="number">11</span>:<span class="number">20</span>])</span><br><span class="line">features_worst =<span class="built_in">list</span>(data.columns[<span class="number">21</span>:<span class="number">31</span>])</span><br></pre></td></tr></table></figure>
+
+<p>因此，獲得五組特徵變量進行學習比較預測的準確性。</p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210402194446558.png" alt="image-20210402194446558"></p>
+<h3 id="3-6-模型訓練"><a href="#3-6-模型訓練" class="headerlink" title="3.6 模型訓練"></a>3.6 模型訓練</h3><p>準備訓練集和測試集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#抽取30%的數據作為測試集，其餘為訓練集</span></span><br><span class="line">train, test = train_test_split(data, test_size = <span class="number">0.3</span>, random_state = <span class="number">42</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#抽取特徵選擇的數據作為訓練集和測試集</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">features_data</span>(<span class="params">features</span>):</span></span><br><span class="line">    X_train = train[features]</span><br><span class="line">    Y_train = train[<span class="string">&#x27;diagnosis&#x27;</span>]</span><br><span class="line">    X_test = test[features]</span><br><span class="line">    Y_test = test[<span class="string">&#x27;diagnosis&#x27;</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#在訓練模型之前，需要對數據進行標準化，使數據在同一個量級上，避免維度問題造成數據誤差。</span></span><br><span class="line">    scaler = StandardScaler()</span><br><span class="line">    X_train = scaler.fit_transform(X_train) </span><br><span class="line">    X_test = scaler.transform(X_test)</span><br><span class="line">    <span class="keyword">return</span> X_train,X_test,Y_train,Y_test</span><br></pre></td></tr></table></figure>
+
+<p>建立模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SVM</span>(<span class="params">X_train, X_test, y_train, y_test</span>):</span></span><br><span class="line">    </span><br><span class="line">    clf = svm.SVC()</span><br><span class="line">    clf.fit(X_train, y_train)</span><br><span class="line">    pred_clf = clf.predict(X_test)</span><br><span class="line">    cm_clf = accuracy_score(y_test, pred_clf)</span><br><span class="line">    <span class="built_in">print</span>(classification_report(y_test, pred_clf))</span><br><span class="line">    <span class="built_in">print</span>(confusion_matrix(y_test, pred_clf))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;SVM Classifier AUC:&quot;</span>, cm_clf)</span><br><span class="line">    <span class="keyword">return</span> clf</span><br></pre></td></tr></table></figure>
+
+<p>將五組特徵分別進行訓練和預測，比較準確率，結果如下。</p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210402195008783.png" alt="image-20210402195008783"></p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210402195029458.png" alt="image-20210402195029458"></p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210402195127657.png" alt="image-20210402195127657"></p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210402195200420.png" alt="image-20210402195200420"></p>
+<p>從結果來看，選擇全部特徵進行訓練的結果會比部分特徵的要更好，準確率能達到97%。</p>
+<h3 id="3-7-模型優化"><a href="#3-7-模型優化" class="headerlink" title="3.7 模型優化"></a>3.7 模型優化</h3><p>雖然準確率還算理想，為了能更進一步比較結果，可以對模型再進行優化。本次項目利用GridSeachCV自動調參，得到最優化的參數和結果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">SVM_Best_Params</span>(<span class="params">x_train, x_test, y_train, y_test</span>):</span></span><br><span class="line"></span><br><span class="line">    param_grid = [</span><br><span class="line">              &#123;<span class="string">&#x27;C&#x27;</span>: [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>], </span><br><span class="line">               <span class="string">&#x27;kernel&#x27;</span>: [<span class="string">&#x27;linear&#x27;</span>]</span><br><span class="line">              &#125;,</span><br><span class="line">              &#123;<span class="string">&#x27;C&#x27;</span>: [<span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>], </span><br><span class="line">               <span class="string">&#x27;gamma&#x27;</span>: [<span class="number">0.001</span>, <span class="number">0.0001</span>], </span><br><span class="line">               <span class="string">&#x27;kernel&#x27;</span>: [<span class="string">&#x27;rbf&#x27;</span>]</span><br><span class="line">              &#125;</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    model = svm.SVC()</span><br><span class="line">    grid = GridSearchCV(model, param_grid, cv = <span class="number">10</span>, scoring = <span class="string">&quot;accuracy&quot;</span>)</span><br><span class="line">    grid.fit(x_train, y_train)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Best training score : &#123;&#125; with paremeters : &#123;&#125;&quot;</span>.<span class="built_in">format</span>(grid.best_score_, grid.best_params_))</span><br><span class="line">    <span class="built_in">print</span>()</span><br><span class="line">    model = svm.SVC(**grid.best_params_)</span><br><span class="line">    model.fit(x_train, y_train)</span><br><span class="line">    y_pred_test = model.predict(x_test)</span><br><span class="line">    y_pred_train = model.predict(x_train)</span><br><span class="line">    cm_test = confusion_matrix(y_test, y_pred_test)</span><br><span class="line">    cm_train = confusion_matrix(y_train, y_pred_train)</span><br><span class="line">    </span><br><span class="line">    acc_test = accuracy_score(y_test, y_pred_test) </span><br><span class="line">    acc_train = accuracy_score(y_train, y_pred_train)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Test Score: &#123;&#125;, Train Score: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(acc_test, acc_train))</span><br><span class="line">    <span class="built_in">print</span>()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;CM Test: \n&quot;</span>,cm_test)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;CM Train: \n&quot;</span>,cm_train)</span><br><span class="line">    <span class="built_in">print</span>()</span><br><span class="line">    <span class="built_in">print</span>(classification_report(y_test,y_pred_test))</span><br><span class="line">    <span class="keyword">return</span> grid</span><br></pre></td></tr></table></figure>
+
+<p>重新訓練模型之後，得到的優化結果如下，準確率較之前有所提高。</p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210406103441087.png" alt="image-20210406103441087"></p>
+<h3 id="3-8-主成分分析-PCA"><a href="#3-8-主成分分析-PCA" class="headerlink" title="3.8 主成分分析(PCA)"></a>3.8 主成分分析(PCA)</h3><p>PCA是最常用的線性降維方法，目的是為了儘量保證不丟失信息量的情況下，對原始數據進行降維，以此使用較少的數據維度達到對數據進行全面分析。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.decomposition <span class="keyword">import</span> PCA</span><br><span class="line">x = data.drop(<span class="string">&#x27;diagnosis&#x27;</span>,axis=<span class="number">1</span>)</span><br><span class="line">y = data.diagnosis</span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">x_scaled = scaler.fit_transform(x)</span><br><span class="line">pca = PCA(n_components=<span class="number">0.99</span>) <span class="comment">#保留99%的信息</span></span><br><span class="line">pca.fit(x_scaled)</span><br><span class="line">X_reduced_pca = pca.transform(x_scaled)</span><br><span class="line"><span class="built_in">print</span>(pca.n_components_)</span><br></pre></td></tr></table></figure>
+
+<p>通過PCA降維最終得到17個特徵，用於上述優化後的模型進行訓練和預測，準確率提高到99%。</p>
+<p><img src="/2021/03/10/Breast-Cancer-Prediction/image-20210406105921732.png" alt="image-20210406105921732"></p>
+<h2 id="4-小結"><a href="#4-小結" class="headerlink" title="4.小結"></a>4.小結</h2><p>SVM是有監督的學習模型，需要事先對數據打上分類標籤，通過求解最大分類間隔來求解二分類問題。</p>
+<p><img src="https://www.freesion.com/images/603/6c49f8182ee5599e6ad833c6482e558b.png" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/05/%E6%88%91%E7%9B%B4%E6%8E%A5%EF%BC%9AHi%EF%BC%8CMom%EF%BC%81/" rel="next" title="我直接：Hi，Mom！">
+                <i class="fa fa-chevron-left"></i> 我直接：Hi，Mom！
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7Carchive">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">1.背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%95%B8%E6%93%9A%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">2.數據集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%95%B8%E6%93%9A%E4%BE%86%E6%BA%90"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 數據來源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%95%B8%E6%93%9A%E7%89%B9%E5%BE%B5"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 數據特徵</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%95%B8%E6%93%9A%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">3.數據分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%A8%A1%E5%A1%8A%E5%B0%8E%E5%85%A5"><span class="nav-number">3.2.</span> <span class="nav-text">3.1 模塊導入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E8%AE%80%E5%8F%96%E6%95%B8%E6%93%9A"><span class="nav-number">3.3.</span> <span class="nav-text">3.2 讀取數據</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%95%B8%E6%93%9A%E6%8E%A2%E7%B4%A2"><span class="nav-number">3.4.</span> <span class="nav-text">3.3 數據探索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%95%B8%E6%93%9A%E6%B8%85%E6%B4%97"><span class="nav-number">3.5.</span> <span class="nav-text">3.3 數據清洗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E6%95%B8%E6%93%9A%E7%B5%B1%E8%A8%88%E6%8F%8F%E8%BF%B0"><span class="nav-number">3.6.</span> <span class="nav-text">3.4 數據統計描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E7%89%B9%E5%BE%B5%E9%81%B8%E6%93%87"><span class="nav-number">3.7.</span> <span class="nav-text">3.5 特徵選擇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E6%A8%A1%E5%9E%8B%E8%A8%93%E7%B7%B4"><span class="nav-number">3.8.</span> <span class="nav-text">3.6 模型訓練</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-%E6%A8%A1%E5%9E%8B%E5%84%AA%E5%8C%96"><span class="nav-number">3.9.</span> <span class="nav-text">3.7 模型優化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90-PCA"><span class="nav-number">3.10.</span> <span class="nav-text">3.8 主成分分析(PCA)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%B0%8F%E7%B5%90"><span class="nav-number">4.</span> <span class="nav-text">4.小結</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">meowsang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
