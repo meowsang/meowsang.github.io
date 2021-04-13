@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-hk">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="麥當勞菜單營養成分分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我，脱粉麦当劳了吗？">
+<meta property="og:url" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/index.html">
+<meta property="og:site_name" content="重塑宇宙">
+<meta property="og:description" content="麥當勞菜單營養成分分析">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/image-20210413115043108.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/image-20210413115147274.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E4%BA%A7%E5%93%81%E6%95%B0%E9%87%8F.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E7%87%9F%E9%A4%8A%E6%8C%87%E6%A8%99%E7%9A%84%E7%9B%B8%E9%97%9C%E6%80%A7.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E5%8D%A1%E8%B7%AF%E9%87%8C.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E5%B9%B3%E5%9D%87%E5%8D%A1%E8%B7%AF%E9%87%8C.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E4%B8%AD%E5%8D%A1%E8%B7%AF%E9%87%8C%E6%9C%80%E9%AB%98%E6%88%96%E6%9C%80%E4%BD%8E%E7%9A%84%E4%BA%A7%E5%93%81.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E9%AB%98%E5%8D%A1%E4%BD%8E%E5%8D%A1%E4%BA%A7%E5%93%81%E5%88%86%E5%B8%83.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E8%90%A5%E5%85%BB%E6%88%90%E5%88%86%E5%9D%87%E5%80%BC%E5%88%86%E5%B8%83.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%7D(%08%25DV%09.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%02%EF%BF%BD%08%25DV%09.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD4%16%08i%08%25DV%09.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png">
+<meta property="article:published_time" content="2021-04-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-13T07:36:52.920Z">
+<meta property="article:author" content="meowsang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/image-20210413115043108.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://meowsang.github.io/2021/04/05/我，脱粉麦当劳了吗？/"/>
+
+
+
+
+
+  <title>我，脱粉麦当劳了吗？ | 重塑宇宙</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-hk">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">重塑宇宙</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我来过这个世界</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            關於
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://meowsang.github.io/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="重塑宇宙">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">我，脱粉麦当劳了吗？</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2021-04-05T00:00:00+08:00">
+                2021-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  麥當勞菜單營養成分分析
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="項目背景"><a href="#項目背景" class="headerlink" title="項目背景"></a>項目背景</h2><p>在過去，人們認為快餐食品大多都是不健康的，麥當勞也成了“垃圾食品”的代名詞。近年來，隨著均衡膳食理念的興起，越來越多的消費者希望在享受美食的同時可以合理規劃熱量的攝取。麥當勞也在多年的研究和實驗中不斷探索和開發健康餐單，證明麥當勞是健康生活方式的組成部分。</p>
+<p>現在也越來越多健身博主/網紅kol等在營銷如何三餐吃麥當勞還能減肥，其實，過量食用任何事物都可能對健康產生不利影響。健康飲食不僅僅需要考慮熱量的攝入，還有許多其他的營養需要考慮。</p>
+<p>本項目將針對麥當勞菜單中產品類型、各營養成分含量及為高卡路里食物標註等方面進行分析。</p>
+<h2 id="數據獲取"><a href="#數據獲取" class="headerlink" title="數據獲取"></a>數據獲取</h2><p>考慮到世界各地的食物供應商有所差別，因此選擇中國麥當勞提供的產品類型和營養成分作為參考，所有數據均來源麥當勞中國官網。</p>
+<p>利用Python爬蟲獲取麥當勞所有類型包括漢堡、小食、甜品、飲料、早餐、開心樂園餐、麥咖啡等產品的各項營養成分，以csv文件的格式保存。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/image-20210413115043108.png" alt="image-20210413115043108"></p>
+<p>獲得的數據集共有105行10列，每一行代表一種麥當勞產品；9列包括了產品的類別、名稱、官網地址以及營養成分，能量(kJ)、蛋白質(g)、脂肪(g)、碳水化合物(g)、鈉(mg)、鈣(mg)，熱量即卡路里則通過1kCal =0.004184kJ公式換算得到。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/image-20210413115147274.png" alt="image-20210413115147274"></p>
+<h2 id="數據分析"><a href="#數據分析" class="headerlink" title="數據分析"></a>數據分析</h2><h3 id="麥當勞產品類型分析"><a href="#麥當勞產品類型分析" class="headerlink" title="麥當勞產品類型分析"></a>麥當勞產品類型分析</h3><p>在麥當勞菜單中包含了10種類別的食物，分析每種類型各包含的產品數量。</p>
+<p>圖表顯示，飲料類的產品數量最多有20種，麥咖啡雪冰系列最少僅有4種。另外，早餐和漢堡的種類數量分別有18、14種，作為麥當勞的主要產品，數量的多少也決定了可選擇性。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E4%BA%A7%E5%93%81%E6%95%B0%E9%87%8F.png" alt="每一类食品的产品数量"></p>
+<h3 id="麥當勞產品營養成分分析"><a href="#麥當勞產品營養成分分析" class="headerlink" title="麥當勞產品營養成分分析"></a>麥當勞產品營養成分分析</h3><p>本數據集記錄了麥當勞各產品的營養成分，包括熱量、蛋白質含量、脂肪含量、碳水化合物含量、鈉含量、鈣含量等。</p>
+<p>根據《中國居民膳食營養素參考攝入量》，選擇18歲以上女性的數據作為指標，得到各項營養成分的每日參考攝入量(如下表)，並計算麥當勞產品中的營養成分含量占每日需攝入量的百分比，即DailyValue(%DV)。</p>
+<table>
+<thead>
+<tr>
+<th align="center">營養成分</th>
+<th align="center">每日攝入量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">能量</td>
+<td align="center">1800 kCal=7531.2 kJ</td>
+</tr>
+<tr>
+<td align="center">蛋白質</td>
+<td align="center">55 g</td>
+</tr>
+<tr>
+<td align="center">脂肪</td>
+<td align="center">40.7 g</td>
+</tr>
+<tr>
+<td align="center">碳水化合物</td>
+<td align="center">221.5 g</td>
+</tr>
+<tr>
+<td align="center">鈉</td>
+<td align="center">1500 mg</td>
+</tr>
+<tr>
+<td align="center">鈣</td>
+<td align="center">800 mg</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>通過繪製相關性矩陣熱力圖，比較不同營養指標之間的相關性。如圖所示，顏色越深代表特徵之間的相關性越高。其中，熱量與脂肪的相關性達到0.92，這與我們的常識也相符合，另外，熱量與鈉的相關性也較高，說明高鹽食物也可能會造成肥胖。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E7%87%9F%E9%A4%8A%E6%8C%87%E6%A8%99%E7%9A%84%E7%9B%B8%E9%97%9C%E6%80%A7.png" alt="營養指標的相關性"></p>
+<p>對每一種類型食品的卡路里進行分析，如下圖所示，早餐、漢堡、麥咖啡糕點等主食系列的卡路里含量最高，麥咖啡雪冰系列的卡路里含量也較高，而咖啡、茶飲、飲料系列的卡路里含量較低。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E5%8D%A1%E8%B7%AF%E9%87%8C.png" alt="每一类食品的卡路里"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E5%B9%B3%E5%9D%87%E5%8D%A1%E8%B7%AF%E9%87%8C.png" alt="每一类食品的平均卡路里"></p>
+<p>每種產品的卡路里含量其實是跟其份量大小有關的，但在數據源中並沒有提供產品的具體份量，因此沒辦法進行統一化處理。在此，只對每種產品提供的卡路里數據進行比較分析。從下圖可以得知，安格斯厚牛培根堡是单份麥當勞產品中熱量最高的。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E4%B8%AD%E5%8D%A1%E8%B7%AF%E9%87%8C%E6%9C%80%E9%AB%98%E6%88%96%E6%9C%80%E4%BD%8E%E7%9A%84%E4%BA%A7%E5%93%81.png" alt="每一类食品中卡路里最高或最低的产品"></p>
+<p>據研究表明，早餐攝入的卡路里最好在400卡以下，所以將卡路里含量低於400的標記為低卡，高於400的標記為高卡，查看各類產品中的卡路里分布。如圖所示，高卡的產品主要分布在麥咖啡糕點、麥咖啡雪冰、早餐、漢堡等系列中，與上述結論一致。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E9%AB%98%E5%8D%A1%E4%BD%8E%E5%8D%A1%E4%BA%A7%E5%93%81%E5%88%86%E5%B8%83.png" alt="每一类食品高卡低卡产品分布"></p>
+<p>比較各類產品中營養成分（蛋白質、脂肪、碳水化合物、鈉、鈣）的含量高低以及均值分布。可以看出，漢堡富含蛋白質、脂肪、鈉等營養元素，這也是其熱量高的原因，而液體類的產品所含的營養成分比較低。開心樂園餐主要是針對兒童而設計的菜單，因此其營養成分的含量相對會比較低。</p>
+<table>
+<thead>
+<tr>
+<th align="center">營養成分</th>
+<th align="center">平均含量最高</th>
+<th align="center">平均含量最低</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">蛋白質</td>
+<td align="center">漢堡</td>
+<td align="center">飲料</td>
+</tr>
+<tr>
+<td align="center">脂肪</td>
+<td align="center">漢堡</td>
+<td align="center">飲料</td>
+</tr>
+<tr>
+<td align="center">碳水化合物</td>
+<td align="center">McCafé雪冰</td>
+<td align="center">開心樂園餐</td>
+</tr>
+<tr>
+<td align="center">鈉</td>
+<td align="center">漢堡</td>
+<td align="center">McCafé茶飲</td>
+</tr>
+<tr>
+<td align="center">鈣</td>
+<td align="center">McCafé咖啡</td>
+<td align="center">小食</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%E6%AF%8F%E4%B8%80%E7%B1%BB%E9%A3%9F%E5%93%81%E7%9A%84%E8%90%A5%E5%85%BB%E6%88%90%E5%88%86%E5%9D%87%E5%80%BC%E5%88%86%E5%B8%83.png" alt="每一类食品的营养成分均值分布"></p>
+<h3 id="每個產品的營養成分分析"><a href="#每個產品的營養成分分析" class="headerlink" title="每個產品的營養成分分析"></a>每個產品的營養成分分析</h3><p>上述對數據集的特徵進行了高度概述，接下來進行更細粒度的分析。DV可以反映一種食品的營養成分是高還是低，相比營養成分本身的數值，其占每日推薦攝入量的百分比顯得更加直觀。如果在5%以上，則偏低；如果在20%以上則偏高。</p>
+<p>從分析結果來看，大部分麥當勞產品屬於高蛋白、高脂肪、高鈉，一份食品是否健康不能只注意它的熱量，而是需要多方面衡量，如果一份套餐中搭配多種食物，那麼就很有可能含量超標了。</p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png" alt="每个产品的热量（%DV）"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%7D(%08%25DV%09.png" alt="每个产品的蛋白质（%DV）"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%02%EF%BF%BD%08%25DV%09.png" alt="每个产品的脂肪（%DV）"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD4%16%08i%08%25DV%09.png" alt="每个产品的碳水化合物（%DV）"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png" alt="每个产品的钠（%DV）"></p>
+<p><img src="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/%EF%BF%BD*%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%08%25DV%09.png" alt="每个产品的钙（%DV）"></p>
+<h2 id="項目小結"><a href="#項目小結" class="headerlink" title="項目小結"></a>項目小結</h2><p>本次分析對麥當勞產品的各項營養成分進行多維度分析，旨在為搭配營養均衡的食品做參考。由於官網提供的信息包含的營養指標較少，若要更全面合理的分析，需要更多的營養成分含量數據，如比較重要的膳食纖維、膽固醇等等。從上述分析可得到，如果想要低熱量低碳水的主食，可以選擇開心樂園餐，儘量避免選擇奶昔雪冰等飲品；如果一天三餐都吃麥當勞的同時又要考慮熱量攝入，那其中必定要選擇蘋果切片、沙拉作為均衡，從營養角度來說尚且可行，從樂趣來說，那就很沒有必要了。</p>
+<p>至於我脫粉麥當勞了嗎，那就得看麥當勞下次的新產品有多黑暗了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/10/Breast-Cancer-Prediction/" rel="next" title="Breast Cancer Prediction">
+                <i class="fa fa-chevron-left"></i> Breast Cancer Prediction
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7Carchive">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A0%85%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">項目背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B8%E6%93%9A%E7%8D%B2%E5%8F%96"><span class="nav-number">2.</span> <span class="nav-text">數據獲取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B8%E6%93%9A%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">數據分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BA%A5%E7%95%B6%E5%8B%9E%E7%94%A2%E5%93%81%E9%A1%9E%E5%9E%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">麥當勞產品類型分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BA%A5%E7%95%B6%E5%8B%9E%E7%94%A2%E5%93%81%E7%87%9F%E9%A4%8A%E6%88%90%E5%88%86%E5%88%86%E6%9E%90"><span class="nav-number">3.2.</span> <span class="nav-text">麥當勞產品營養成分分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%8F%E5%80%8B%E7%94%A2%E5%93%81%E7%9A%84%E7%87%9F%E9%A4%8A%E6%88%90%E5%88%86%E5%88%86%E6%9E%90"><span class="nav-number">3.3.</span> <span class="nav-text">每個產品的營養成分分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A0%85%E7%9B%AE%E5%B0%8F%E7%B5%90"><span class="nav-number">4.</span> <span class="nav-text">項目小結</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">meowsang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
