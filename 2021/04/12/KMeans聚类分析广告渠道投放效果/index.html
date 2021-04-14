@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-hk">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="分析背景随着流量成本的提高，高质量的流量媒体越来越分散，如何降低流量成本、增加流量规模、提高广告转化效果成为企业的重要诉求。 在本案例中，企业由于投放的广告渠道形式较多，需要对其做广告效果分析以实现有针对性的广告效果评估和优化。本次分析通过平均轮廓系数确定KMeans的最佳k值，将广告渠道数据划分类别，用雷达图展示各类别的特征差异，并对各类别广告渠道的广告效果进行深入分析。 K-means算法分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMeans聚类分析广告渠道投放效果">
+<meta property="og:url" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/index.html">
+<meta property="og:site_name" content="重塑宇宙">
+<meta property="og:description" content="分析背景随着流量成本的提高，高质量的流量媒体越来越分散，如何降低流量成本、增加流量规模、提高广告转化效果成为企业的重要诉求。 在本案例中，企业由于投放的广告渠道形式较多，需要对其做广告效果分析以实现有针对性的广告效果评估和优化。本次分析通过平均轮廓系数确定KMeans的最佳k值，将广告渠道数据划分类别，用雷达图展示各类别的特征差异，并对各类别广告渠道的广告效果进行深入分析。 K-means算法分析">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414183259810.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414191109905.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414191305999.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414190418337.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414192331537.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/corr.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414193723674.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414194614282.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414195710802.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414200744150.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414201301203.png">
+<meta property="og:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/result.png">
+<meta property="article:published_time" content="2021-04-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-14T14:29:00.615Z">
+<meta property="article:author" content="meowsang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414183259810.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://meowsang.github.io/2021/04/12/KMeans聚类分析广告渠道投放效果/"/>
+
+
+
+
+
+  <title>KMeans聚类分析广告渠道投放效果 | 重塑宇宙</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-hk">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">重塑宇宙</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我来过这个世界</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            關於
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            標籤
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分類
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            歸檔
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://meowsang.github.io/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="重塑宇宙">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KMeans聚类分析广告渠道投放效果</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">發表於</span>
+              
+              <time title="創建於" itemprop="dateCreated datePublished" datetime="2021-04-12T00:00:00+08:00">
+                2021-04-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="分析背景"><a href="#分析背景" class="headerlink" title="分析背景"></a>分析背景</h2><p>随着流量成本的提高，高质量的流量媒体越来越分散，如何降低流量成本、增加流量规模、提高广告转化效果成为企业的重要诉求。</p>
+<p>在本案例中，企业由于投放的广告渠道形式较多，需要对其做广告效果分析以实现有针对性的广告效果评估和优化。本次分析通过平均轮廓系数确定KMeans的最佳k值，将广告渠道数据划分类别，用雷达图展示各类别的特征差异，并对各类别广告渠道的广告效果进行深入分析。</p>
+<h2 id="K-means算法分析思路"><a href="#K-means算法分析思路" class="headerlink" title="K-means算法分析思路"></a>K-means算法分析思路</h2><p><strong>聚类算法</strong>：属于无监督机器学习算法，通过计算样本项之间的相似度（也称为样本间的距离），按照数据内部存在的数据特征将数据集划分为多个不同的类别，使类别内的数据比较相似，类别之间的数据相似度比较小。</p>
+<p><strong>K-means聚类的一般步骤</strong>：</p>
+<ol>
+<li><p>从样本中选取k个点为初始聚类中心；</p>
+</li>
+<li><p>计算每一个样本点到k个初始中心的距离，将离中心最近的点归为该类；</p>
+</li>
+<li><p>计算每一个新类聚类中心，再计算剩余的每一个样本点到新聚类中心的距离，将离中心最近的点归为该类；</p>
+</li>
+<li><p>以此类推，重复第3步，直到没有新的样本点划分到聚类中心或达到规定的迭代次数，聚类结束。</p>
+</li>
+</ol>
+<h2 id="数据分析"><a href="#数据分析" class="headerlink" title="数据分析"></a>数据分析</h2><h4 id="数据概括"><a href="#数据概括" class="headerlink" title="数据概括"></a>数据概括</h4><p>数据维度：除了渠道唯一标识，共12个维度，889行。</p>
+<p>数据字段说明：</p>
+<ul>
+<li>渠道代号：业务方统一命名规划的唯一渠道标识</li>
+<li>日均UV：每天的独立访问量</li>
+<li>平均注册率：日均注册用户数/平均每日访问量</li>
+<li>平均搜索量：每个访问的搜索量</li>
+<li>访问深度：总页面浏览量/平均每天的访问量</li>
+<li>平均停留时间：总停留时长/平均每天的访问量</li>
+<li>订单转化率：总订单数量/平均每天的访客量</li>
+<li>投放时间：每个广告在外投放的天数</li>
+<li>素材类型：’jpg’、’swf’、’gif’、’sp’</li>
+<li>广告类型：banner、tips、不确定、横幅、暂停</li>
+<li>合作方式：’roi’、’cpc’、’cpm’、’cpd’</li>
+<li>广告尺寸：140x40、308x388、450x300、600x90、480x360、960x126、900x120、390x270</li>
+<li>广告卖点：打折、满减、满赠、秒杀、直降、满返</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">raw_data = pd.read_csv(<span class="string">&#x27;ad_performance.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414183259810.png" alt="image-20210414183259810"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据类型</span></span><br><span class="line">raw_data.dtypes</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414191109905.png" alt="image-20210414191109905"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看缺失值</span></span><br><span class="line">raw_data.isnull().<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414191305999.png" alt="image-20210414191305999"></p>
+<p>平均停留时间有2个缺失值，可以用均值做填充。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据描述性统计</span></span><br><span class="line">raw_data.describe().T</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414190418337.png" alt="image-20210414190418337"></p>
+<p>日均UV的数据波动很大，说明不同渠道之间的差异非常明显，但是差异并不一定是异常值，广告流量的特征是有爆发性的，所以一般不作为异常值处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 相关性分析</span></span><br><span class="line">raw_data.corr().<span class="built_in">round</span>(<span class="number">2</span>).T</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414192331537.png" alt="image-20210414192331537"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 绘制分布图</span></span><br><span class="line">sns.pairplot(raw_data,kind=<span class="string">&#x27;reg&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/corr.png" alt="corr"></p>
+<p>从上述相关性的分析中看出，平均停留时间和访问深度的相关性比较高，达到0.72，但是特征并不是很明显。其余特征之间的相关性并不突出。</p>
+<h4 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1.缺失值替换</span></span><br><span class="line">data_2 = raw_data.fillna(raw_data[<span class="string">&#x27;平均停留时间&#x27;</span>].mean()) <span class="comment"># 用均值替换缺失值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.对非数值变量进行one-hot编码，转化为数值变量</span></span><br><span class="line">cols = [<span class="string">&#x27;素材类型&#x27;</span>, <span class="string">&#x27;广告类型&#x27;</span>, <span class="string">&#x27;合作方式&#x27;</span>, <span class="string">&#x27;广告尺寸&#x27;</span>, <span class="string">&#x27;广告卖点&#x27;</span>]</span><br><span class="line">model_ohe = OneHotEncoder(sparse=<span class="literal">False</span>) <span class="comment"># 建立OneHotEncode对象</span></span><br><span class="line">ohe_matrix = model_ohe.fit_transform(data_2[cols])</span><br><span class="line">ohe_matrix_df = pd.get_dummies(data_2[cols])</span><br><span class="line">ohe_matrix_df.head()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414193723674.png" alt="image-20210414193723674"></p>
+<p>从数据可以看到，UV和转化率这些字段的数据处在不同的量级，UV有上万，而转化率却小于1，因此需要做数据标准化，这里采用MINMAX标准化。<em>数据的标准化(normalization)是将数据按比例缩放，使之落入一个小的特定区间。在某些比较和评价的指标处理中经常会用到，去除数据的单位限制，将其转化为无量纲的纯数值，便于不同单位或量级的指标能够进行比较和加权。</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 3.数据标准化</span></span><br><span class="line">scale_matrix = data_2.iloc[:, <span class="number">1</span>:<span class="number">8</span>] <span class="comment"># 获得要转换的矩阵</span></span><br><span class="line">model_scaler = MinMaxScaler() <span class="comment"># 建立MinMaxScaler模型对象</span></span><br><span class="line">data_scaled = model_scaler.fit_transform(scale_matrix)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并onehot编码的数据和归一化后的数据</span></span><br><span class="line">x_data = np.hstack((data_scaled, ohe_matrix))</span><br><span class="line"><span class="built_in">print</span>(x_data.<span class="built_in">round</span>(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414194614282.png"></p>
+<h4 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h4><p>KMeans聚类算法的关键点在于K值的确定。KMeans作为非监督学习，并没有“最佳”K值，但是从数据特征上来讲，最佳的K值是类内距离最小化，类间距离最大化。直观的理解就是“物以类聚”：同类的“聚集”“抱团”，不同类的离得远。</p>
+<p>引入轮廓系数评估聚类质量，通过枚举每个k计算平均轮廓系数得到最佳值。轮廓系数的值介于[-1,1]，越趋近于1代表聚度和分离度都相对较优，将所有点的轮廓系数求平均，就是该聚类结果总的轮廓系数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过平均轮廓系数检验得到最佳KMeans聚类模型</span></span><br><span class="line">score_list = [] <span class="comment"># 储存系数的列表</span></span><br><span class="line">score_init = -<span class="number">1</span> <span class="comment"># 初始化轮廓系数</span></span><br><span class="line"><span class="keyword">for</span> n_k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>, <span class="number">6</span>):</span><br><span class="line">    model_kmeans = KMeans(n_clusters=n_k, random_state=<span class="number">42</span>) <span class="comment"># 建立模型</span></span><br><span class="line">    cluster_tmp = model_kmeans.fit_predict(x_data)</span><br><span class="line">    score_tmp = metrics.silhouette_score(x_data, cluster_tmp) <span class="comment"># 得到K值的轮廓系数</span></span><br><span class="line">    <span class="keyword">if</span> score_tmp &gt; score_init:</span><br><span class="line">        good_k = n_k <span class="comment"># 储存k值</span></span><br><span class="line">        score_init = score_tmp <span class="comment"># 储存轮廓系数，做下次比较</span></span><br><span class="line">        good_model = model_kmeans <span class="comment"># 储存模型</span></span><br><span class="line">        good_cluster = cluster_tmp <span class="comment"># 储存聚类标签</span></span><br><span class="line">    score_list.append([n_k, score_tmp])</span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;:-^30&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="string">&#x27;K值对应的轮廓系数:&#x27;</span>))</span><br><span class="line"><span class="built_in">print</span>(np.array(score_list))  <span class="comment"># 打印输出所有K下的详细得分</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;最优的K值是:&#123;0&#125; \n对应的轮廓系数是:&#123;1&#125;&#x27;</span>.<span class="built_in">format</span>(good_k, score_init.<span class="built_in">round</span>(<span class="number">4</span>)))</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414195710802.png" alt="image-20210414195710802"></p>
+<p>结果显示了不同k下的平均轮廓得分。就经验看，如果平均轮廓得分值小于0，意味着聚类效果不佳；如果值大于0且小于0.5，说明聚类效果一般；如果值大于0.5，则说明聚类效果比较好。本次通过计算轮廓系数确定最佳的K值，确定最优值为 K=4 类。</p>
+<h4 id="聚类结果特征分析"><a href="#聚类结果特征分析" class="headerlink" title="聚类结果特征分析"></a>聚类结果特征分析</h4><p>通过上述的模型，将每个样本都打上了标签clusters，即属于4类中的哪一类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1.将原始数据与聚类标签整合</span></span><br><span class="line">cluster_labels = pd.DataFrame(good_cluster, columns=[<span class="string">&#x27;cluster&#x27;</span>])</span><br><span class="line">merge_data = pd.concat((data_2, cluster_labels),axis=<span class="number">1</span>)</span><br><span class="line">merge_data</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414200744150.png" alt="image-20210414200744150"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 2.计算每个类别的数量</span></span><br><span class="line">cluster_count = pd.DataFrame(merge_data[<span class="string">&#x27;渠道代号&#x27;</span>].groupby(merge_data[<span class="string">&#x27;cluster&#x27;</span>]).count()).T.rename(&#123;<span class="string">&#x27;渠道代号&#x27;</span>:<span class="string">&#x27;count&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.计算每个类别的占比</span></span><br><span class="line">cluster_ratio = (cluster_count/<span class="built_in">len</span>(merge_data)).<span class="built_in">round</span>(<span class="number">4</span>).rename(&#123;<span class="string">&#x27;count&#x27;</span>:<span class="string">&#x27;percentage&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4.计算各个聚类类别内部最显著特征值</span></span><br><span class="line">cluster_features = [] <span class="comment"># 空列表储存特征信息</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(good_k):</span><br><span class="line">    label_data = merge_data[merge_data[<span class="string">&#x27;cluster&#x27;</span>] == n] <span class="comment"># 获得特定类别数据</span></span><br><span class="line">    part1_data = label_data.iloc[:,<span class="number">1</span>:<span class="number">8</span>] <span class="comment"># 获得数值型数据</span></span><br><span class="line">    part1_desc = part1_data.describe().<span class="built_in">round</span>(<span class="number">3</span>)</span><br><span class="line">    merge_data_mean = part1_desc.iloc[<span class="number">2</span>,:] <span class="comment"># 均值特征</span></span><br><span class="line">    </span><br><span class="line">    part2_data = label_data.iloc[:,<span class="number">8</span>:-<span class="number">1</span>] <span class="comment"># 获得字符型数据特征</span></span><br><span class="line">    part2_desc = part2_data.describe(include=<span class="string">&#x27;all&#x27;</span>)</span><br><span class="line">    merge_data2_mean = part2_desc.iloc[<span class="number">2</span>,:] <span class="comment"># 均值特征</span></span><br><span class="line">    merge_line = pd.concat((merge_data_mean, merge_data2_mean), axis=<span class="number">0</span>) <span class="comment"># 合并数据</span></span><br><span class="line">    cluster_features.append(merge_line)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 5.输出完整的类别特征信息</span></span><br><span class="line">cluster_df = pd.DataFrame(cluster_features).T</span><br><span class="line">cluster_all = pd.concat((cluster_count, cluster_ratio, cluster_df), axis=<span class="number">0</span>)</span><br><span class="line">cluster_all</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/image-20210414201301203.png" alt="image-20210414201301203"></p>
+<p>综上，可知所有渠道被分为4个类别，每个类别的样本量分别为：313、73、154 、349，对应占比分别为：35%、8%、17%、39%。</p>
+<h4 id="聚类结果可视化"><a href="#聚类结果可视化" class="headerlink" title="聚类结果可视化"></a>聚类结果可视化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1.各类别数据预处理（标准化）</span></span><br><span class="line">num_sets = cluster_df.iloc[:<span class="number">6</span>, :].T.astype(np.float64)  <span class="comment"># 获取要展示的数据</span></span><br><span class="line">num_sets_max_min = model_scaler.fit_transform(num_sets)  <span class="comment"># 获得标准化后的数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.画布基本设置</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))  <span class="comment"># 建立画布</span></span><br><span class="line">ax = fig.add_subplot(<span class="number">111</span>, polar=<span class="literal">True</span>)  <span class="comment"># 增加子网格，注意polar参数</span></span><br><span class="line">labels = np.array(merge_data_mean.index[:-<span class="number">1</span>])  <span class="comment"># 设置要展示的数据标签</span></span><br><span class="line">cor_list = [<span class="string">&#x27;r&#x27;</span>,<span class="string">&#x27;g&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;y&#x27;</span>]  <span class="comment"># 定义不同类别的颜色</span></span><br><span class="line">angles = np.linspace(<span class="number">0</span>, <span class="number">2</span> * np.pi, <span class="built_in">len</span>(labels), endpoint=<span class="literal">False</span>)  <span class="comment"># 计算各个区间的角度</span></span><br><span class="line">angles = np.concatenate((angles, [angles[<span class="number">0</span>]]))  <span class="comment"># 建立相同首尾字段以便于闭合</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.画雷达图</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(num_sets)):  <span class="comment"># 循环每个类别</span></span><br><span class="line">    data_tmp = num_sets_max_min[i, :]  <span class="comment"># 获得对应类数据</span></span><br><span class="line">    data = np.concatenate((data_tmp, [data_tmp[<span class="number">0</span>]]))  <span class="comment"># 建立相同首尾字段以便于闭合</span></span><br><span class="line">    ax.plot(angles, data, <span class="string">&#x27;o-&#x27;</span>, c=cor_list[i], label=<span class="string">&quot;第%d类渠道&quot;</span>%(i))  <span class="comment"># 画线</span></span><br><span class="line"></span><br><span class="line">ax.set_thetagrids(angles * <span class="number">180</span> / np.pi, labels, fontproperties=<span class="string">&quot;SimHei&quot;</span>,fontsize=<span class="number">18</span>)  <span class="comment"># 设置极坐标轴</span></span><br><span class="line">ax.set_title(<span class="string">&quot;各聚类类别显著特征对比&quot;</span>, fontproperties=<span class="string">&quot;SimHei&quot;</span>,fontsize=<span class="number">22</span>)  <span class="comment"># 设置标题放置</span></span><br><span class="line">ax.set_rlim(-<span class="number">0.2</span>, <span class="number">1.2</span>)  <span class="comment"># 设置坐标轴尺度范围</span></span><br><span class="line">plt.legend(loc=<span class="string">&quot;upper right&quot;</span> ,bbox_to_anchor=(<span class="number">1.2</span>,<span class="number">1.0</span>),fontsize=<span class="number">12</span>)  <span class="comment"># 设置图例位置</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/04/12/KMeans%E8%81%9A%E7%B1%BB%E5%88%86%E6%9E%90%E5%B9%BF%E5%91%8A%E6%B8%A0%E9%81%93%E6%8A%95%E6%94%BE%E6%95%88%E6%9E%9C/result.png" alt="result"></p>
+<h2 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h2><ol>
+<li><p>初步分析</p>
+<p>结合雷达图，可以清晰地看到不同类别广告渠道的特征倾向：</p>
+</li>
+</ol>
+<ul>
+<li><strong>聚类0</strong>：在平均搜索量、平均停留时间、订单转化率等流量质量的指标上表现良好，但是访问深度和注册转换率较低。</li>
+<li><strong>聚类1</strong>：各方面特征都不明显，在各个流量质量和流量数量的指标均处于“中等”层次，不突出但是较为均衡。</li>
+<li><strong>聚类2</strong>：日均uv和平均注册率非常突出，而其他的流量质量方面表现却比较差，证明这是一类“引流”+“拉新“的渠道。</li>
+<li><strong>聚类3</strong>：访问深度、平均停留时间和投放时间较高，但是其它属性较低，说明这类广告效果质量较差。</li>
+</ul>
+<ol start="2">
+<li>深入分析</li>
+</ol>
+<ul>
+<li><strong>聚类0：</strong>这类广告渠道的短板是访问深度和平均注册率，因此该类媒体无法为企业带来大量的流量以及新用户。这类广告应增加对于注册转化效果的优化效应，重点从人群匹配、注册引导、注册激励等方面加强运营。</li>
+<li><strong>聚类1</strong>：该广告渠道各方面表现均比较一般，占比只有8%，在资金不足或优化广告结构时，重点考虑其取舍问题；或者可在不明确场景需求时考虑在这个渠道投放广告。</li>
+<li><strong>聚类2</strong>：这类渠道更符合广告本身“广而告之“的基础诉求，因此适合在大规模广告宣传和引流时使用，对于这类渠道的单位流量成本需要重点关注，实际投放过程中可以满减为促销点，通过较大尺寸（如308*338）的广告类型做引导流量点击。</li>
+<li><strong>聚类3</strong>：这类渠道占到39%，是主题渠道之一，因此需要考虑实际投放价值。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/05/%E6%88%91%EF%BC%8C%E8%84%B1%E7%B2%89%E9%BA%A6%E5%BD%93%E5%8A%B3%E4%BA%86%E5%90%97%EF%BC%9F/" rel="next" title="我，脱粉麦当劳了吗？">
+                <i class="fa fa-chevron-left"></i> 我，脱粉麦当劳了吗？
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7Carchive">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">分析背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K-means%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">K-means算法分析思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">数据分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A6%82%E6%8B%AC"><span class="nav-number">3.0.1.</span> <span class="nav-text">数据概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">3.0.2.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.0.3.</span> <span class="nav-text">建立模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%BB%93%E6%9E%9C%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90"><span class="nav-number">3.0.4.</span> <span class="nav-text">聚类结果特征分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%BB%93%E6%9E%9C%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">3.0.5.</span> <span class="nav-text">聚类结果可视化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">结果分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">meowsang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 強力驅動</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主題 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
